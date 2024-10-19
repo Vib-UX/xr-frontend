@@ -1,10 +1,10 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { http, WagmiProvider, createConfig } from 'wagmi';
+import { createConfig, http, WagmiProvider } from 'wagmi';
 import { base } from 'wagmi/chains';
 import { mock } from 'wagmi/connectors';
-import TransactionWrapper from './TransactionWrapper';
+import TransactionWrapper from './RecordDailyWorkout';
 
 const config = createConfig({
   chains: [base],

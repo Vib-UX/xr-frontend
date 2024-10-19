@@ -1,14 +1,14 @@
 'use client'
 
-import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 
 export function GogginsCard() {
   return (
-    <Card className="w-full max-w-3xl overflow-hidden rounded-3xl border border-gray-200">
+    <Card className="w-full  overflow-hidden rounded-3xl border border-gray-200">
       <div className="relative h-48 bg-gray-100">
         <img
-          src="https://source.unsplash.com/random/800x200?fitness"
+          src="/images/beingmotivated.png"
           alt="Beyond Motivated"
           className="w-full h-full object-cover"
         />
@@ -19,7 +19,7 @@ export function GogginsCard() {
       <CardContent className="p-6">
         <div className="flex items-center mb-4">
           <img
-            src="https://source.unsplash.com/random/100x100?man"
+            src="/images/davidgoggins.png"
             alt="David Goggins"
             className="w-20 h-20 rounded-full mr-4 object-cover"
           />
@@ -32,20 +32,20 @@ export function GogginsCard() {
           David Goggins, a former Navy SEAL, is known for extreme mental toughness. His program
           builds both physical endurance and mental resilience, emphasizing discipline and grit.
         </p>
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-4 gap-4 mb-6">
           {[
-            { title: "Endurance-Focused Workouts", image: "gym" },
-            { title: "Mindset & Motivation", image: "meditation" },
-            { title: "Extreme Challenges", image: "running" },
-            { title: "Consistency & Discipline", image: "workout" },
+            { title: "Endurance-Focused Workouts", image: "/images/endurance.png" },
+            { title: "Mindset & Motivation", image: "/images/mindset.png" },
+            { title: "Extreme Challenges", image: "/images/extreme.png" },
+            { title: "Consistency & Discipline", image: "/images/discipline.png" },
           ].map((item) => (
             <Card key={item.title} className="overflow-hidden">
               <img
-                src={`https://source.unsplash.com/random/300x200?${item.image}`}
+                src={item.image}
                 alt={item.title}
                 className="w-full h-32 object-cover"
               />
-              <CardContent className="p-2 bg-gray-100">
+              <CardContent className="p-2 bg-gray-100 h-full">
                 <p className="text-sm font-semibold text-center">{item.title}</p>
               </CardContent>
             </Card>
