@@ -54,8 +54,19 @@ import { Roboto } from 'next/font/google';
 const roboto = Roboto({
   subsets: ['latin'],
   weight: ['400', '500', '700', '900'],
-});
+})
 
+import '@coinbase/onchainkit/styles.css';
+import '@rainbow-me/rainbowkit/styles.css';
+import { SessionProvider } from 'next-auth/react';
+import dynamic from 'next/dynamic';
+
+const OnchainProviders = dynamic(
+  () => import('src/components/OnchainProviders'),
+  {
+    ssr: false,
+  },
+);
 export default function RootLayout({
   children,
 }: {
@@ -63,7 +74,11 @@ export default function RootLayout({
 }) {
   return (
     <html>
-      <body className={roboto.className}>{children}</body>
+      <body className={roboto.className}>
+        <OnchainProviders>
+          {children}
+        </OnchainProviders>
+      </body>
     </html>
   );
 }
