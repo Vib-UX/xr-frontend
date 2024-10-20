@@ -5,6 +5,7 @@ import useGlobalStore from '@/store'
 import { MORPH_HOLESKY } from '@/utils/chains'
 import { PaymasterMode } from '@biconomy/account'
 import Big from 'big.js'
+import { X } from 'lucide-react'; // Add this import for the close icon
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { encodeFunctionData, erc20Abi } from 'viem'
@@ -70,14 +71,10 @@ const StakeButtonWorkout = ({ onSuccess }: { onSuccess: () => void }) => {
           to: FITNESS_ADDRESS_MAPPING[chain?.id as keyof typeof FITNESS_ADDRESS_MAPPING] as `0x${string}`,
           data: stakeTokensFuncData
         }
-        let finalTx = [approveTx]
-        if (allowance !== undefined && Big(allowance.toString()).lt(amount)) {
-          finalTx = [approveTx, stakeTokensTx]
-        }
         if (!stakedAmount) {
-          finalTx = [stakeTokensTx]
+          const finalTx = [approveTx, stakeTokensTx]
           toast.dismiss()
-          toast.loading('Sending bundle transaction...')
+          toast.loading('Sending bundle transaction...',)
           const bundleTransaction = await morphBiconomyAccount.sendTransaction(
             finalTx,
             {
@@ -87,11 +84,36 @@ const StakeButtonWorkout = ({ onSuccess }: { onSuccess: () => void }) => {
           const userOpReceipt = await bundleTransaction.wait();
           if (userOpReceipt.success == 'true') {
             toast.dismiss()
-            toast.success('Transaction successful!')
+            toast.success(
+              ({ id }) => (
+                <div className='flex items-center w-[200px] justify-between break-keep'>
+                  <div>
+                    Transaction&nbsp;successful!&nbsp;
+                    <a
+                      href={`${chain?.blockExplorers?.default.url}/tx/${userOpReceipt.receipt.transactionHash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block mt-1 text-sm text-blue-500 hover:underline"
+                    >
+                      View&nbsp;transaction
+                    </a>
+                  </div>
+                  <button
+                    onClick={() => toast.dismiss(id)}
+                    className="ml-2 p-1 rounded-full hover:bg-gray-200"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ),
+              { duration: Infinity }
+            )
             setTxHash(userOpReceipt.receipt.transactionHash)
+            setIsLoading(false)
             onSuccess()
           }
         } else {
+          setIsLoading(false)
           toast.dismiss()
           toast.success('Tokens already staked!')
           onSuccess()
@@ -129,7 +151,30 @@ const StakeButtonWorkout = ({ onSuccess }: { onSuccess: () => void }) => {
           throw new Error('Stake tokens transaction failed')
         }
         toast.dismiss()
-        toast.success('Tokens staked successfully!')
+        toast.success(
+          ({ id }) => (
+            <div className='flex items-center w-[200px] justify-between break-keep'>
+              <div>
+                Transaction&nbsp;successful!&nbsp;
+                <a
+                  href={`${chain?.blockExplorers?.default.url}/tx/${stakeTokensTxReceipt.transactionHash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block mt-1 text-sm text-blue-500 hover:underline"
+                >
+                  View&nbsp;transaction
+                </a>
+              </div>
+              <button
+                onClick={() => toast.dismiss(id)}
+                className="ml-2 p-1 rounded-full hover:bg-gray-200"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          ),
+          { duration: Infinity }
+        )
         setIsLoading(false)
         onSuccess()
       } else {

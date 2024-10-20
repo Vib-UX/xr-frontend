@@ -6,6 +6,7 @@ import useGlobalStore from '@/store'
 import { MORPH_HOLESKY } from '@/utils/chains'
 import { PaymasterMode } from '@biconomy/account'
 import { useQuery } from '@tanstack/react-query'
+import { X } from 'lucide-react'; // Add this import for the close icon
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { encodeFunctionData } from 'viem'
@@ -40,6 +41,7 @@ const EndWorkoutButton = ({ disabled }: { disabled: boolean }) => {
 
   const handleRecordDailyWorkout = async () => {
     try {
+
       toast.loading("Transaction awaiting confirmation...")
       setIsLoading(true)
       if (!publicClient) {
@@ -69,7 +71,31 @@ const EndWorkoutButton = ({ disabled }: { disabled: boolean }) => {
         const userOpReceipt = await bundleTransaction.wait();
         if (userOpReceipt.success == 'true') {
           toast.dismiss()
-          toast.success('Transaction successful!')
+          toast.success(
+            ({ id }) => (
+              <div className='flex items-center w-[200px] justify-between break-keep'>
+                <div>
+                  Transaction&nbsp;successful!&nbsp;
+                  <a
+                    href={`${chain?.blockExplorers?.default.url}/tx/${userOpReceipt.receipt.transactionHash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block mt-1 text-sm text-blue-500 hover:underline"
+                  >
+                    View&nbsp;transaction
+                  </a>
+                </div>
+                <button
+                  onClick={() => toast.dismiss(id)}
+                  className="ml-2 p-1 rounded-full hover:bg-gray-200"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ),
+            { duration: Infinity }
+          )
+          setIsLoading(false)
           setTxHash(userOpReceipt.receipt.transactionHash)
         }
         return
@@ -91,7 +117,30 @@ const EndWorkoutButton = ({ disabled }: { disabled: boolean }) => {
         throw new Error('Record daily workout transaction failed')
       }
       toast.dismiss()
-      toast.success('Transaction successful!')
+      toast.success(
+        ({ id }) => (
+          <div className='flex items-center w-[200px] justify-between break-keep'>
+            <div>
+              Transaction&nbsp;successful!&nbsp;
+              <a
+                href={`${chain?.blockExplorers?.default.url}/tx/${recordDailyWorkoutTxReceipt.transactionHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block mt-1 text-sm text-blue-500 hover:underline"
+              >
+                View&nbsp;transaction
+              </a>
+            </div>
+            <button
+              onClick={() => toast.dismiss(id)}
+              className="ml-2 p-1 rounded-full hover:bg-gray-200"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        ),
+        { duration: Infinity }
+      )
       toggleStreak()
       setTxHash(recordDailyWorkoutTxReceipt.transactionHash)
       setIsLoading(false)

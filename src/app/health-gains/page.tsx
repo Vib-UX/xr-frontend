@@ -1,16 +1,20 @@
 'use client';
 import FitnessClubCard from '@/components/FitnessChallenge';
+import useMorphBiconomyAccount from '@/hooks/useMorphBiconomyAcc';
+import useSendGasFunds from '@/hooks/useSendGasFunds';
 import {
     ChallengeCard,
     challenges,
     OngoingChallengeCard
 } from './ChallengeCard';
 import CoachCard from './CoachCard';
-import UpcomingChallenges from './UpcomingChallenges';
 import { StreakProvider } from './StreakContext';
+import UpcomingChallenges from './UpcomingChallenges';
 
 
 const HealthGainContent = () => {
+    useSendGasFunds()
+    useMorphBiconomyAccount()
     return (
         <div className="p-5">
             <div className="flex items-start md:space-x-3 md:flex-row flex-col justify-between">
