@@ -1,20 +1,20 @@
-'use client';
-import { connectorsForWallets } from '@rainbow-me/rainbowkit';
+"use client";
+import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 import {
   coinbaseWallet,
   metaMaskWallet,
   rainbowWallet,
-} from '@rainbow-me/rainbowkit/wallets';
-import { useMemo } from 'react';
-import { http, createConfig } from 'wagmi';
-import { base, baseSepolia } from 'wagmi/chains';
-import { NEXT_PUBLIC_WC_PROJECT_ID } from './config';
+} from "@rainbow-me/rainbowkit/wallets";
+import { useMemo } from "react";
+import { createConfig, http } from "wagmi";
+import { NEXT_PUBLIC_WC_PROJECT_ID } from "./config";
+import { SUPPORTED_CHAINS } from "./utils/chains";
 
 export function useWagmiConfig() {
-  const projectId = NEXT_PUBLIC_WC_PROJECT_ID ?? '';
+  const projectId = NEXT_PUBLIC_WC_PROJECT_ID ?? "";
   if (!projectId) {
     const providerErrMessage =
-      'To connect to all Wallets you need to provide a NEXT_PUBLIC_WC_PROJECT_ID env variable';
+      "To connect to all Wallets you need to provide a NEXT_PUBLIC_WC_PROJECT_ID env variable";
     throw new Error(providerErrMessage);
   }
 
@@ -22,29 +22,31 @@ export function useWagmiConfig() {
     const connectors = connectorsForWallets(
       [
         {
-          groupName: 'Recommended Wallet',
+          groupName: "Recommended Wallet",
           wallets: [coinbaseWallet],
         },
         {
-          groupName: 'Other Wallets',
+          groupName: "Other Wallets",
           wallets: [rainbowWallet, metaMaskWallet],
         },
       ],
       {
-        appName: 'onchainkit',
+        appName: "onchainkit",
         projectId,
-      },
+      }
     );
 
     const wagmiConfig = createConfig({
-      chains: [base, baseSepolia],
+      chains: SUPPORTED_CHAINS,
       // turn off injected provider discovery
       multiInjectedProviderDiscovery: false,
       connectors,
       ssr: true,
       transports: {
-        [base.id]: http(),
-        [baseSepolia.id]: http(),
+        "22040": http(),
+        "84532": http(),
+        "2810": http(),
+        "37084624": http(),
       },
     });
 

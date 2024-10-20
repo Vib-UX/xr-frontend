@@ -91,7 +91,7 @@ export const MENTAL_HEALTH_TOPICS = [
     id: 1,
     name: "Dr. Sarah Johnson",
     title: "Mindfulness and Meditation",
-    image: "/images/mindfulness.png", // Replace with actual image path
+    image: "/images/mark.png", // Replace with actual image path
     description:
       "Explore the power of mindfulness and meditation techniques to reduce stress, increase self-awareness, and improve emotional well-being. These practices have been shown to lower anxiety and promote a sense of calm in everyday life.",
   },
@@ -99,7 +99,7 @@ export const MENTAL_HEALTH_TOPICS = [
     id: 2,
     name: "Dr. Michael Lee",
     title: "Coping with Anxiety",
-    image: "/images/anxiety.png", // Replace with actual image path
+    image: "/images/ini.png", // Replace with actual image path
     description:
       "Learn effective strategies to manage and reduce anxiety. This topic covers cognitive behavioral therapy (CBT) techniques, breathing exercises, and lifestyle adjustments to help you regain control in challenging situations.",
   },
@@ -107,7 +107,7 @@ export const MENTAL_HEALTH_TOPICS = [
     id: 3,
     name: "Dr. Emily Carter",
     title: "Building Resilience",
-    image: "/images/resilience.png", // Replace with actual image path
+    image: "/images/dumbell.png", // Replace with actual image path
     description:
       "Discover how to develop emotional resilience and bounce back from adversity. This topic focuses on techniques like positive thinking, mental fortitude, and strategies to face life’s challenges with greater strength and adaptability.",
   },
@@ -115,7 +115,7 @@ export const MENTAL_HEALTH_TOPICS = [
     id: 4,
     name: "Dr. Robert Smith",
     title: "Managing Depression",
-    image: "/images/depression.png", // Replace with actual image path
+    image: "/images/luke.png", // Replace with actual image path
     description:
       "Understand the signs of depression and explore ways to manage it. This includes practical tips for self-care, therapy options, and how to build a support system to help you navigate through difficult periods.",
   },

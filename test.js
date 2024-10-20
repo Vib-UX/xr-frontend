@@ -2,7 +2,7 @@ const https = require("https");
 
 // Replace with your own access token
 const accessToken =
-  "ya29.a0AcM612zcYqfHO05vN-5FVdrcIDwwilWs1_-mlJVp6_fKkZDjcm0jtl-u3OaOP-rV0yjPo7N4WOVgPtwTL_L21L2JMjkPX7Ccy-ECpkubKRagEeQl6yzgEh6obnXHn4tv1CbMHeVlEtwL2fCbzrx2QFmFA8UhALfY-QaCgYKAYgSARISFQHGX2MiDYJ4wnqQhDvTU4vNyBYxKw0169";
+  "ya29.a0AcM612yuCuCSmknjac1u5-RN3jgxehU582LADww_cIg6D4RZUs-Z2uZqDMtIIxMWDF-PN3YmcI-WabGT8NX08MrB8rx91x0MuU-qHwsDEHPHGqVZ1zl1iq9L01J-1D9DIslCngWezqQ0B-BeBD5sP5vIuJkaEtM6WJ5GiYroaCgYKAUsSARASFQHGX2MiM_w6ld1cSi3QKyy2snX98A0175";
 
 // Define the time range for the fitness data (example: last 7 days)
 const startTimeMillis = new Date("2024-01-01").getTime(); // Replace with desired start date

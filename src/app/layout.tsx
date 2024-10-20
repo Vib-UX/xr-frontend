@@ -10,75 +10,74 @@ import { siteConfig } from '@/constant/config';
 // !STARTERCONF Change these default meta
 // !STARTERCONF Look at @/constant/config to change them
 export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title: {
-    default: siteConfig.title,
-    template: `%s | ${siteConfig.title}`,
-  },
-  description: siteConfig.description,
-  robots: { index: true, follow: true },
-  // !STARTERCONF this is the default favicon, you can generate your own from https://realfavicongenerator.net/
-  // ! copy to /favicon folder
-  icons: {
-    icon: '/favicon/favicon.ico',
-    shortcut: '/favicon/favicon-16x16.png',
-    apple: '/favicon/apple-touch-icon.png',
-  },
-  manifest: `/favicon/site.webmanifest`,
-  openGraph: {
-    url: siteConfig.url,
-    title: siteConfig.title,
+    metadataBase: new URL(siteConfig.url),
+    title: {
+        default: siteConfig.title,
+        template: `%s | ${siteConfig.title}`,
+    },
     description: siteConfig.description,
-    siteName: siteConfig.title,
-    images: [`${siteConfig.url}/images/og.jpg`],
-    type: 'website',
-    locale: 'en_US',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: siteConfig.title,
-    description: siteConfig.description,
-    images: [`${siteConfig.url}/images/og.jpg`],
-    // creator: '@th_clarence',
-  },
-  // authors: [
-  //   {
-  //     name: 'Theodorus Clarence',
-  //     url: 'https://theodorusclarence.com',
-  //   },
-  // ],
+    robots: { index: true, follow: true },
+    // !STARTERCONF this is the default favicon, you can generate your own from https://realfavicongenerator.net/
+    // ! copy to /favicon folder
+    icons: {
+        icon: '/favicon/favicon.ico',
+        shortcut: '/favicon/favicon-16x16.png',
+        apple: '/favicon/apple-touch-icon.png',
+    },
+    manifest: `/favicon/site.webmanifest`,
+    openGraph: {
+        url: siteConfig.url,
+        title: siteConfig.title,
+        description: siteConfig.description,
+        siteName: siteConfig.title,
+        images: [`${siteConfig.url}/images/og.jpg`],
+        type: 'website',
+        locale: 'en_US',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: siteConfig.title,
+        description: siteConfig.description,
+        images: [`${siteConfig.url}/images/og.jpg`],
+        // creator: '@th_clarence',
+    },
+    // authors: [
+    //   {
+    //     name: 'Theodorus Clarence',
+    //     url: 'https://theodorusclarence.com',
+    //   },
+    // ],
 };
 
-import { Roboto } from 'next/font/google';
+import { Oxanium } from 'next/font/google';
 
-const roboto = Roboto({
-  subsets: ['latin'],
-  weight: ['400', '500', '700', '900'],
-})
+const oxanium = Oxanium({
+    subsets: ['latin'],
+    weight: ['400', '500', '600', '700'],
+});
 
-import '@coinbase/onchainkit/styles.css';
+import Layout from '@/components/layout/Layout';
 import '@rainbow-me/rainbowkit/styles.css';
-import { SessionProvider } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 
 const OnchainProviders = dynamic(
-  () => import('src/components/OnchainProviders'),
-  {
-    ssr: false,
-  },
+    () => import('src/components/OnchainProviders'),
+    {
+        ssr: false,
+    }
 );
 export default function RootLayout({
-  children,
+    children,
 }: {
-  children: React.ReactNode;
+    children: React.ReactNode;
 }) {
-  return (
-    <html>
-      <body className={roboto.className}>
-        <OnchainProviders>
-          {children}
-        </OnchainProviders>
-      </body>
-    </html>
-  );
+    return (
+        <html>
+            <body className={oxanium.className}>
+                <OnchainProviders>
+                    <Layout>{children}</Layout>
+                </OnchainProviders>
+            </body>
+        </html>
+    );
 }

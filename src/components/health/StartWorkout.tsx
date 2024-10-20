@@ -1,5 +1,8 @@
 'use client';
 import { FITNESS_ABI } from '@/abi/FITNESS_ABI';
+import {
+  FITNESS_ADDRESS_MAPPING
+} from '@/constants';
 import type {
   TransactionError,
   TransactionResponse,
@@ -13,15 +16,12 @@ import {
 } from '@coinbase/onchainkit/transaction';
 import type { ContractFunctionParameters } from 'viem';
 import { useAccount } from 'wagmi';
-import {
-  FITNESS_ADDRESS
-} from '../constants';
 
-export default function RecordDailyWorkout() {
+export default function StartWorkoutButton({ onSuccess }: { onSuccess: () => void }) {
   const { chain } = useAccount();
   const contracts = [
     {
-      address: FITNESS_ADDRESS,
+      address: FITNESS_ADDRESS_MAPPING[chain?.id as keyof typeof FITNESS_ADDRESS_MAPPING],
       abi: FITNESS_ABI,
       functionName: 'recordDailyWorkout',
     },
@@ -33,6 +33,7 @@ export default function RecordDailyWorkout() {
 
   const handleSuccess = (response: TransactionResponse) => {
     console.log('Transaction successful', response);
+    onSuccess();
   };
 
   return (
@@ -42,7 +43,7 @@ export default function RecordDailyWorkout() {
       onError={handleError}
       onSuccess={handleSuccess}
     >
-      <TransactionButton className="w-full bg-blue-600 h-12 hover:bg-blue-700 text-white" text='Complete your workout' />
+      <TransactionButton className="w-full bg-blue-600 h-12 hover:bg-blue-700 text-white" text='Start Workout' />
       <TransactionStatus>
         <TransactionStatusLabel />
         <TransactionStatusAction />

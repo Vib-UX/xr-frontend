@@ -1,5 +1,8 @@
 'use client';
 import { FITNESS_ABI } from '@/abi/FITNESS_ABI';
+import {
+  FITNESS_ADDRESS
+} from '@/constants';
 import type {
   TransactionError,
   TransactionResponse,
@@ -13,9 +16,6 @@ import {
 } from '@coinbase/onchainkit/transaction';
 import type { ContractFunctionParameters } from 'viem';
 import { useAccount } from 'wagmi';
-import {
-  FITNESS_ADDRESS
-} from '../constants';
 
 export default function RecordDailyWorkout() {
   const { chain } = useAccount();

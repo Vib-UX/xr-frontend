@@ -4,15 +4,11 @@ import GoogleSignIn from "@/components/GoogleSiginModal"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
-import { useAccount } from 'wagmi'
 import SignupButton from "./SignupButton"
 
 export function NavbarComponent() {
   const pathname = usePathname()
-  const { address } = useAccount();
-
   const [isSignInOpen, setIsSignInOpen] = useState(false)
-
 
   return (
     <nav className="bg-[#111] text-white p-4">
@@ -49,7 +45,7 @@ export function NavbarComponent() {
             </Link>
           ))}
         </div>
-        <div className=" items-center hidden gap-3">
+        <div className=" items-center  gap-3">
           <SignupButton />
         </div>
       </div>
