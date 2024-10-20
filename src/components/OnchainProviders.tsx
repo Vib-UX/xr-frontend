@@ -1,5 +1,5 @@
 'use client';
-import { AIRDAO, MORPH_HOLESKY, SKALE_NEBULA_TESTNET } from '@/utils/chains';
+import { AIRDAO, FLOW_TESTNET, MORPH_HOLESKY, SKALE_NEBULA_TESTNET } from '@/utils/chains';
 import { OnchainKitProvider } from '@coinbase/onchainkit';
 import { EthereumWalletConnectors } from '@dynamic-labs/ethereum';
 import {
@@ -9,13 +9,20 @@ import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SessionProvider } from 'next-auth/react';
+import { Roboto } from 'next/font/google';
 import type { ReactNode } from 'react';
+import { Toaster } from 'react-hot-toast';
 import { base } from 'viem/chains';
 import { WagmiProvider } from 'wagmi';
 import { NEXT_PUBLIC_CDP_API_KEY } from '../config';
 import { useWagmiConfig } from '../wagmi';
-
 type Props = { children: ReactNode };
+
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['400', '500', '700', '900'],
+})
+
 
 const queryClient = new QueryClient();
 
@@ -56,6 +63,15 @@ function OnchainProviders({ children }: Props) {
               rpcUrls: [AIRDAO.rpcUrls.default.http[0]],
               networkId: AIRDAO.id,
             },
+            {
+              blockExplorerUrls: [FLOW_TESTNET.blockExplorers.default.url],
+              chainId: FLOW_TESTNET.id,
+              name: FLOW_TESTNET.name,
+              iconUrls: ['/images/flow.svg'],
+              nativeCurrency: FLOW_TESTNET.nativeCurrency,
+              rpcUrls: [FLOW_TESTNET.rpcUrls.default.http[0]],
+              networkId: FLOW_TESTNET.id,
+            },
           ],
         },
       }}
@@ -66,6 +82,20 @@ function OnchainProviders({ children }: Props) {
             <RainbowKitProvider modalSize="compact">
               <DynamicWagmiConnector>
                 <SessionProvider>
+                  <Toaster
+                    position="top-center"
+                    reverseOrder={false}
+                    toastOptions={{
+                      style: {
+                        background: 'linear-gradient(180deg, #f9fafc 41.6%, #cadcff 89.6%, #abc7fe 100%)',
+                        color: '#000',
+                        fontFamily: roboto.style.fontFamily,
+                        fontWeight: "bold",
+                        borderRadius: '8px',
+                        padding: '16px',
+                      },
+                    }}
+                  />
                   {children}
                 </SessionProvider>
               </DynamicWagmiConnector>

@@ -1,5 +1,6 @@
 'use client';
 import { FITNESS_ABI } from '@/abi/FITNESS_ABI';
+import { FITNESS_ADDRESS_MAPPING } from '@/constants';
 import type {
   TransactionError,
   TransactionResponse,
@@ -12,19 +13,17 @@ import {
   TransactionStatusLabel,
 } from '@coinbase/onchainkit/transaction';
 import type { ContractFunctionParameters } from 'viem';
-import {
-  BASE_SEPOLIA_CHAIN_ID,
-  FITNESS_ADDRESS
-} from '../constants';
+import { useAccount } from 'wagmi';
 
 export default function JoinFitnessChallenge({ text }:
   {
     text: string
   }
 ) {
+  const { chain } = useAccount()
   const contracts = [
     {
-      address: FITNESS_ADDRESS,
+      address: FITNESS_ADDRESS_MAPPING[chain?.id as keyof typeof FITNESS_ADDRESS_MAPPING] as `0x${string}`,
       abi: FITNESS_ABI,
       functionName: 'joinFitnessChallenge',
     },
@@ -42,7 +41,7 @@ export default function JoinFitnessChallenge({ text }:
     <div className='flex items-center justify-end'>
       <Transaction
         contracts={contracts}
-        chainId={BASE_SEPOLIA_CHAIN_ID}
+        chainId={chain?.id}
         onError={handleError}
         className='w-fit flex items-center justify-end '
         onSuccess={handleSuccess}

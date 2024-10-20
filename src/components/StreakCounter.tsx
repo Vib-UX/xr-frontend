@@ -1,5 +1,5 @@
 'use client';
-import { Zap } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { useState } from 'react';
 
 interface StreakCounterProps {
@@ -25,16 +25,21 @@ export function StreakCounter({ initialStreak = [] }: StreakCounterProps) {
     };
 
     const getColor = (index: number) =>
-        streak.includes(index) ? 'text-[#0051FE]' : 'text-[#313131B2]';
+        streak.includes(index) ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-400';
 
     return (
-        <div className="flex items-center">
-            {[0, 1, 2, 3, 4, 5].map((index) => (
-                <Zap
+        <div className="flex space-x-2 items-center">
+            {[0, 1, 2, 3].map((index) => (
+                <div
                     key={index}
-                    className={`size-5 cursor-pointer ${getColor(index)}`}
-                    onClick={() => handleClick(index)}
-                />
+                    className={`w-8 h-8 rounded-md flex items-center justify-center ${getColor(index)}`}
+                >
+                    {index <= 3 ? (
+                        <CheckCircle2 className="w-6 h-6" />
+                    ) : (
+                        ''
+                    )}
+                </div>
             ))}
         </div>
     );

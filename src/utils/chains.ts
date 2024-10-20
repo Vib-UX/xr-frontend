@@ -1,5 +1,5 @@
 import { defineChain } from "viem";
-import { morphHolesky, skaleNebulaTestnet } from "wagmi/chains";
+import { flowTestnet, morphHolesky, skaleNebulaTestnet } from "wagmi/chains";
 export const airdao = defineChain({
   id: 22040,
   name: "AirDAO Testnet",
@@ -21,9 +21,11 @@ export const airdao = defineChain({
 export const SKALE_NEBULA_TESTNET = skaleNebulaTestnet;
 export const MORPH_HOLESKY = morphHolesky;
 export const AIRDAO = airdao;
+export const FLOW_TESTNET = flowTestnet;
 
 export const SUPPORTED_CHAINS = [
   AIRDAO,
   MORPH_HOLESKY,
   SKALE_NEBULA_TESTNET,
+  FLOW_TESTNET,
 ] as const;

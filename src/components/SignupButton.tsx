@@ -6,7 +6,6 @@ export default function SignupButton() {
     <WalletWrapper
       className="ockConnectWallet_Container min-w-[90px] w-full bg-blue-600 hover:bg-blue-700 !text-white !rounded-lg"
       text="Connect Wallet"
-      withWalletAggregator={true}
     />
   );
 }

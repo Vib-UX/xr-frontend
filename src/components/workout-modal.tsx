@@ -1,5 +1,4 @@
-'use client';
-
+"use client";
 import {
     Card,
     CardContent,
@@ -7,88 +6,80 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from '@/components/ui/card';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { fetchStats } from '@/hooks/useFitbitAuth';
-import { useQuery } from '@tanstack/react-query';
-import Image from 'next/image';
-import { useRef, useState } from 'react';
-import StartWorkoutButton from './health/StartWorkout';
-import RecordDailyWorkout from './RecordDailyWorkout';
+} from "@/components/ui/card";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import Image from "next/image";
+import StakeButtonWorkout from "./health/StakeButtonWorkout";
+
+import { useEffect, useRef, useState } from "react";
+import Button from "./buttons/Button";
+import StartWorkoutButton from "./health/EndWorkoutButton";
 
 export default function WorkoutoutModal({
     children,
+    open,
+    onClose,
 }: {
     children: React.ReactNode;
+    open: boolean;
+    onClose: () => void;
 }) {
-    const [showVrVideo, setShowVrVideo] = useState(true);
+    const [showVrVideo, setShowVrVideo] = useState(false);
     const [isWorkoutStarted, setIsWorkoutStarted] = useState(false);
-    const sessionCode = sessionStorage.getItem('fitbit_token');
+    const [isVideoPlaying, setIsVideoPlaying] = useState(false)
     const videoRef = useRef<HTMLVideoElement>(null);
-    const { data: stats, refetch } = useQuery({
-        queryKey: ['user-stats'],
-        queryFn: () => fetchStats(sessionCode!),
-        enabled: false,
-    });
 
-    const handleStartWorkout = async () => {
-        //TODO contract call of staking
-        await refetch();
+    useEffect(() => {
+        function handlePlayPause() {
+            setIsVideoPlaying(!videoRef.current?.paused)
+        }
 
-        if (videoRef.current) {
-            videoRef.current.play();
-            setIsWorkoutStarted(true);
+        const videoElement = videoRef.current
+        if (videoElement) {
+            videoElement.addEventListener("play", handlePlayPause)
+            videoElement.addEventListener("pause", handlePlayPause)
+            videoElement.addEventListener("ended", handlePlayPause)
         }
-    };
-    const validateWorkout = () => {
-        const changeInVo2 =
-            stats?.vo2Max?.cardioScore[0]?.value?.vo2Max >
-            stats?.vo2Max?.cardioScore[1]?.value?.vo2Max;
-        const changeInBr =
-            stats?.brData[0]?.value?.breathingRate >
-            stats?.brData[1]?.value?.breathingRate;
-        return changeInVo2 || changeInBr;
-    };
-    const handleCompleteWorkout = async () => {
-        const workoutResp = validateWorkout();
-        console.log(workoutResp);
-        if (workoutResp) {
-            //TODO contract call of txn
-            await refetch();
+
+        return () => {
+            if (videoElement) {
+                videoElement.removeEventListener("play", handlePlayPause)
+                videoElement.removeEventListener("pause", handlePlayPause)
+                videoElement.removeEventListener("ended", handlePlayPause)
+            }
         }
-    };
+    }, [])
 
     return (
-        <Dialog>
+        <Dialog
+            open={open}
+            onOpenChange={(data) => {
+                if (!data) {
+                    onClose();
+                }
+            }}
+        >
             <DialogTrigger asChild>{children}</DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] md:max-w-[700px]">
+            <DialogContent
+                onCloseAutoFocus={(e) => e.preventDefault()}
+                onPointerDownOutside={(e) => e.preventDefault()}
+                className="sm:max-w-[425px] md:max-w-[700px]"
+            >
                 <Card className="w-full mt-3">
                     <CardHeader>
-                        <CardTitle>
-                            Get Started with your fitness journey
-                        </CardTitle>
+                        <CardTitle>Get Started with your fitness journey</CardTitle>
                         <CardDescription>
-                            Cut fat and build power at home and get your desired
-                            physique.
+                            Cut fat and build power at home and get your desired physique.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         {!showVrVideo ? (
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                                 {[
-                                    {
-                                        name: 'Chest',
-                                        image: '/images/bodybuilder.png',
-                                    },
-                                    {
-                                        name: 'Legs',
-                                        image: '/images/dumbell.png',
-                                    },
-                                    { name: 'Back', image: '/images/luke.png' },
-                                    {
-                                        name: 'Shoulders',
-                                        image: '/images/ini.png',
-                                    },
+                                    { name: "Chest", image: "/images/bodybuilder.png" },
+                                    { name: "Legs", image: "/images/dumbell.png" },
+                                    { name: "Back", image: "/images/luke.png" },
+                                    { name: "Shoulders", image: "/images/ini.png" },
                                 ].map((part) => (
                                     <div
                                         key={part.name}
@@ -127,42 +118,43 @@ export default function WorkoutoutModal({
                             </h3>
                             <ul className="space-y-2">
                                 <li className="flex items-center justify-between">
-                                    <span className="font-medium">
-                                        Duration
-                                    </span>
-                                    <div className="font-bold text-blue-600">
-                                        5 Days
-                                    </div>
+                                    <span className="font-medium">Duration</span>
+                                    <div className="font-bold text-blue-600">5 Days</div>
                                 </li>
                                 <li className="flex items-center justify-between">
                                     <span className="font-medium">Rewards</span>
-                                    <div className="font-bold text-blue-600">
-                                        120 Days
-                                    </div>
+                                    <div className="font-bold text-blue-600">120 Days</div>
                                 </li>
                                 <li className="flex items-center justify-between">
-                                    <span className="font-medium">
-                                        Calories burned
-                                    </span>
-                                    <div className="font-bold text-blue-600">
-                                        60-100
-                                    </div>
+                                    <span className="font-medium">Calories burned</span>
+                                    <div className="font-bold text-blue-600">60-100</div>
                                 </li>
                             </ul>
                         </div>
                     </CardContent>
                     <CardFooter>
                         {showVrVideo ? (
-                            <StartWorkoutButton
+                            isWorkoutStarted ? (
+                                <StartWorkoutButton disabled={false} />
+                            ) : (
+                                <Button
+                                    onClick={async () => {
+                                        setIsWorkoutStarted(true);
+                                        if (videoRef.current) {
+                                            videoRef.current.play();
+                                        }
+                                    }}
+                                    className="w-full flex items-center justify-center bg-blue-600 h-12  hover:bg-blue-700 text-white"
+                                >
+                                    Start Workout
+                                </Button>
+                            )
+                        ) : (
+                            <StakeButtonWorkout
                                 onSuccess={() => {
-                                    setIsWorkoutStarted(true);
-                                    if (videoRef.current) {
-                                        videoRef.current.play();
-                                    }
+                                    setShowVrVideo(true);
                                 }}
                             />
-                        ) : (
-                            <RecordDailyWorkout />
                         )}
                     </CardFooter>
                 </Card>

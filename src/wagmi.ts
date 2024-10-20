@@ -1,12 +1,7 @@
 "use client";
-import { connectorsForWallets } from "@rainbow-me/rainbowkit";
-import {
-  coinbaseWallet,
-  metaMaskWallet,
-  rainbowWallet,
-} from "@rainbow-me/rainbowkit/wallets";
 import { useMemo } from "react";
 import { createConfig, http } from "wagmi";
+import Web3AuthConnectorInstance from "./components/web3auth/Web3AuthInstance";
 import { NEXT_PUBLIC_WC_PROJECT_ID } from "./config";
 import { SUPPORTED_CHAINS } from "./utils/chains";
 
@@ -19,32 +14,15 @@ export function useWagmiConfig() {
   }
 
   return useMemo(() => {
-    const connectors = connectorsForWallets(
-      [
-        {
-          groupName: "Recommended Wallet",
-          wallets: [coinbaseWallet],
-        },
-        {
-          groupName: "Other Wallets",
-          wallets: [rainbowWallet, metaMaskWallet],
-        },
-      ],
-      {
-        appName: "onchainkit",
-        projectId,
-      }
-    );
-
     const wagmiConfig = createConfig({
       chains: SUPPORTED_CHAINS,
       // turn off injected provider discovery
       multiInjectedProviderDiscovery: false,
-      connectors,
+      connectors: [Web3AuthConnectorInstance()],
       ssr: true,
       transports: {
         "22040": http(),
-        "84532": http(),
+        "545": http(),
         "2810": http(),
         "37084624": http(),
       },

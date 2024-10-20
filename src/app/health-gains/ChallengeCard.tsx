@@ -2,9 +2,12 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import WorkoutoutModal from '@/components/workout-modal';
-import { CheckCircle2 } from 'lucide-react';
+import { MUSD_ADDRESS_MAPPING } from "@/constants";
 import Image from 'next/image';
 import { useState } from 'react';
+import { Address, erc20Abi, formatUnits, getAddress } from 'viem';
+import { useAccount, useReadContract } from 'wagmi';
+import { StreakDisplay } from './StreakContext';
 
 export interface Challenge {
     title: string
@@ -115,39 +118,48 @@ export function UpcomingChallengeCard() {
 }
 
 export function OngoingChallengeCard() {
-    let [isOpen, setIsOpen] = useState(false);
-    function open() {
-        setIsOpen(true);
-    }
+    const [open, setOpen] = useState(false)
+    const { address, chain } = useAccount()
+
+    const { data } = useReadContract({
+        abi: erc20Abi,
+        address: MUSD_ADDRESS_MAPPING[chain?.id as keyof typeof MUSD_ADDRESS_MAPPING] as `0x${string}`,
+        functionName: 'balanceOf',
+        args: [address ? getAddress(address as Address) : '' as '0x${string}'],
+        query: {
+            enabled: !!address
+        }
+    })
+
+
     return (
-        <>
-            {/* <WorkoutModal isOpen={isOpen} setIsOpen={setIsOpen} /> */}
-            <div className="bg-white rounded-lg shadow-lg border border-blue-400 overflow-hidden">
-                <div className="md:flex">
-                    <div className="md:flex-1 p-6">
-                        <h2 className="text-2xl font-bold mb-2">
-                            Serenity Stretch & Breathe Challenge
-                        </h2>
-                        <p className="text-gray-600 mb-4">
-                            VR sessions focusing on gentle stretching and
-                            controlled breathing to improve flexibility and
-                            reduce tension.
-                        </p>
-                        <div className="flex justify-between mb-4">
-                            <div>
-                                <span className="font-semibold">Duration:</span>{' '}
-                                <span className="text-blue-600 font-bold">
-                                    5 Days
-                                </span>
-                            </div>
-                            <div>
-                                <span className="font-semibold">Reward:</span>{' '}
-                                <span className="text-blue-600 font-bold">
-                                    120 Tokens
-                                </span>
-                            </div>
+        <div className="bg-white rounded-lg shadow-lg border border-blue-400 overflow-hidden">
+            <div className="md:flex">
+                <div className="md:flex-1 p-6">
+                    <h2 className="text-2xl font-bold mb-2">
+                        Serenity Stretch & Breathe Challenge
+                    </h2>
+                    <p className="text-gray-600 mb-4">
+                        VR sessions focusing on gentle stretching and
+                        controlled breathing to improve flexibility and
+                        reduce tension.
+                    </p>
+                    <div className="flex justify-between mb-4">
+                        <div>
+                            <span className="font-semibold">Duration:</span>{' '}
+                            <span className="text-blue-600 font-bold">
+                                5 Days
+                            </span>
                         </div>
-                        <div className="mb-4">
+                        <div>
+                            <span className="font-semibold">Reward:</span>{' '}
+                            <span className="text-blue-600 font-bold">
+                                120 Tokens
+                            </span>
+                        </div>
+                    </div>
+                    <div className="flex justify-between mb-4">
+                        <div className="">
                             <p className="font-semibold">Calories Burned:</p>
                             <p className="text-gray-600">
                                 Approx. 60-100 Calories per session
@@ -155,48 +167,39 @@ export function OngoingChallengeCard() {
                                 (300-500 total)
                             </p>
                         </div>
-                        <div>
-                            <p className="font-semibold mb-2">
-                                Days to Complete
-                            </p>
-                            <div className="flex flex-col md:flex-row justify-between items-center gap-y-4 md:gap-y-0">
-                                <div className="flex space-x-2">
-                                    {[1, 2, 3, 4, 5].map((day) => (
-                                        <div
-                                            key={day}
-                                            className={`w-8 h-8 rounded-md flex items-center justify-center ${day <= 3
-                                                ? 'bg-blue-100 text-blue-600'
-                                                : 'bg-gray-100 text-gray-400'
-                                                }`}
-                                        >
-                                            {day <= 3 ? (
-                                                <CheckCircle2 className="w-6 h-6" />
-                                            ) : (
-                                                ''
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                                <WorkoutoutModal>
-                                    <div
-                                        onClick={open}
-                                        className="bg-blue-100 p-2 rounded-lg cursor-pointer w-full md:w-fit text-center"
-                                    >
-                                        Try It Out
-                                    </div>
-                                </WorkoutoutModal>
+                        <a target="_blank" href={`${chain?.blockExplorers?.default.url}/address/${MUSD_ADDRESS_MAPPING[chain?.id as keyof typeof MUSD_ADDRESS_MAPPING] as `0x${string}`}`} className="text-blue-600 hover:text-blue-700 underline font-bold">
+                            <div>
+                                <span className="font-semibold">Reward:</span>{' '}
+                                {data ? formatUnits(data, 6).toString() : '0'} USDC
                             </div>
+                        </a>
+                    </div>
+
+                    <div>
+                        <p className="font-semibold mb-2">
+                            Days to Complete
+                        </p>
+                        <div className="flex flex-col md:flex-row justify-between items-center gap-y-4 md:gap-y-0">
+                            <StreakDisplay />
+                            <WorkoutoutModal open={open} onClose={() => setOpen(false)}>
+                                <div
+                                    onClick={() => setOpen(true)}
+                                    className="bg-blue-100 p-2 rounded-lg cursor-pointer w-full md:w-fit text-center"
+                                >
+                                    Try It Out
+                                </div>
+                            </WorkoutoutModal>
                         </div>
                     </div>
-                    <div className="md:w-2/5">
-                        <img
-                            src="/images/vr.png"
-                            alt="Person in VR headset doing yoga"
-                            className="w-full h-full object-cover"
-                        />
-                    </div>
+                </div>
+                <div className="md:w-2/5">
+                    <img
+                        src="/images/vr.png"
+                        alt="Person in VR headset doing yoga"
+                        className="w-full h-full object-cover"
+                    />
                 </div>
             </div>
-        </>
+        </div>
     );
 }

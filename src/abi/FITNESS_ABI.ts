@@ -64,6 +64,44 @@ export const FITNESS_ABI = [
         name: "user",
         type: "address",
       },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "StakeLost",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "Staked",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
     ],
     name: "UserReset",
     type: "event",
@@ -86,6 +124,19 @@ export const FITNESS_ABI = [
     ],
     name: "WeeklyChallengeCompleted",
     type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_user",
+        type: "address",
+      },
+    ],
+    name: "_initializeUser",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [],
@@ -138,6 +189,11 @@ export const FITNESS_ABI = [
         name: "weeklyChallengeCompleted",
         type: "uint256",
       },
+      {
+        internalType: "uint256",
+        name: "stakeAmount",
+        type: "uint256",
+      },
     ],
     stateMutability: "view",
     type: "function",
@@ -147,6 +203,19 @@ export const FITNESS_ABI = [
     name: "joinFitnessChallenge",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "penaltyPercentage",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -261,6 +330,19 @@ export const FITNESS_ABI = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
+    ],
+    name: "stakeTokens",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "streakRequirement",
     outputs: [
@@ -296,6 +378,11 @@ export const FITNESS_ABI = [
       {
         internalType: "uint256",
         name: "weeklyChallengeCompleted",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "stakeAmount",
         type: "uint256",
       },
     ],

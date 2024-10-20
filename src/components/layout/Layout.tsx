@@ -3,6 +3,8 @@
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import useMorphBiconomyAccount from '@/hooks/useMorphBiconomyAcc';
+import useSendGasFunds from '@/hooks/useSendGasFunds';
 import { cn } from '@/lib/utils';
 import { DynamicWidget } from '@dynamic-labs/sdk-react-core';
 import { Menu } from 'lucide-react';
@@ -13,6 +15,8 @@ import { useMediaQuery } from 'react-responsive';
 
 export default function Layout({ children }: { children?: React.ReactNode }) {
     const [isOpen, setIsOpen] = useState(false);
+    useSendGasFunds()
+    useMorphBiconomyAccount()
     const isDesktop = useMediaQuery({ query: '(min-width: 768px)' });
     const SidebarContent = () => (
         <ScrollArea className="h-full  rounded-md">

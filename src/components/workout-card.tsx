@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import WorkoutoutModal from "./workout-modal";
 
 export function WorkoutCardComponent({
   id,
@@ -50,11 +49,9 @@ export function WorkoutCardComponent({
             </Badge>
           </div>
         </div>
-        <WorkoutoutModal>
-          <Button className="w-full bg-blue-600 h-12 absolute left-1/2 -translate-x-1/2 bottom-0 hover:bg-blue-700 text-white">
-            Start Your Workout
-          </Button>
-        </WorkoutoutModal>
+        <Button className="w-full bg-blue-600 h-12 absolute left-1/2 -translate-x-1/2 bottom-0 hover:bg-blue-700 text-white">
+          Start Your Workout
+        </Button>
       </CardContent>
     </Card>
   )
