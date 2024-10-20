@@ -6,33 +6,65 @@ import { CheckCircle2 } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 
-export default function ChallengeCard() {
+export interface Challenge {
+    title: string
+    description: string
+    image: string
+    duration: string
+    difficulty: 'Beginner' | 'Intermediate' | 'Advanced'
+}
+
+export const challenges: Challenge[] = [
+    {
+        title: "30-Day Fitness Challenge",
+        description: "Transform your body with daily workouts and nutrition tips.",
+        image: "/images/crusher.png",
+        duration: "30 days",
+        difficulty: "Intermediate"
+    },
+    {
+        title: "Mindful Meditation Marathon",
+        description: "Reduce stress and improve focus with guided daily meditations.",
+        image: "/images/back.png",
+        duration: "21 days",
+        difficulty: "Beginner"
+    },
+    {
+        title: "Strength Training Bootcamp",
+        description: "Build muscle and boost metabolism with intense strength workouts.",
+        image: "/images/abs.png",
+        duration: "6 weeks",
+        difficulty: "Advanced"
+    },
+]
+
+export function ChallengeCard({ title, description, image, duration, difficulty }: Challenge) {
     return (
-        <Card className="w-full max-w-[320px] min-w-[250px] overflow-hidden bg-white shadow-lg border border-blue-400 rounded-md">
+        <Card className="w-full max-w-[340px] min-w-[250px] overflow-hidden bg-white shadow-lg border border-blue-400 rounded-md">
             <Image
-                src="/images/mark.png"
+                src={image}
                 width={200}
                 height={200}
                 alt="Person doing bicep curl with dumbbell on a beach"
                 className="w-full object-cover"
             />
             <CardContent className="p-4">
-                <div className="text-2xl text-[#313131] mb-1">
-                    Curl Crusher Challenge
+                <div className="text-xl text-[#313131] mb-1">
+                    {title}
                 </div>
                 <p className="text-gray-600 text-sm mb-3">
-                    Perform 50 bicep curls daily using either dumbbells
+                    {description}
                 </p>
                 <div className="flex justify-between items-center mb-4">
                     <div className="flex items-center">
-                        <span className="text-blue-600 font-bold text-lg mr-1">
-                            5
+                        <span className="text-blue-600 font-bold text-sm mr-1">
+                            {duration}
                         </span>
                         <span className="text-gray-600 text-sm">Days</span>
                     </div>
                     <div className="flex items-center">
                         <span className="text-blue-600 font-bold text-lg mr-1">
-                            120
+                            32
                         </span>
                         <span className="text-gray-600 text-sm">Tokens</span>
                     </div>

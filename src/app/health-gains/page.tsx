@@ -1,8 +1,14 @@
-import ChallengeCard, {
-    OngoingChallengeCard,
-    UpcomingChallengeCard,
+'use client';
+import FitnessClubCard from '@/components/FitnessChallenge';
+import {
+    ChallengeCard,
+    challenges,
+    OngoingChallengeCard
 } from './ChallengeCard';
 import CoachCard from './CoachCard';
+import UpcomingChallenges from './UpcomingChallenges';
+
+
 
 const HealthGainPage = () => {
     return (
@@ -17,29 +23,20 @@ const HealthGainPage = () => {
                         Available Challenges
                     </p>
                     <div className="flex max-w-[1400px] overflow-x-auto gap-4">
-                        <ChallengeCard />
-                        <ChallengeCard />
-                        <ChallengeCard />
-                        <ChallengeCard />
-                        <ChallengeCard />
-                        <ChallengeCard />
+                        {challenges.map((challenge, index) => (
+                            <ChallengeCard key={index} {...challenge} />
+                        ))}
                     </div>
                     <p className="text-2xl text-[#313131] mt-10 mb-4">
                         Upcoming Challenges
                     </p>
-                    <div className="flex max-w-[1400px] overflow-x-auto gap-4">
-                        <UpcomingChallengeCard />
-                        <UpcomingChallengeCard />
-                        <UpcomingChallengeCard />
-                        <UpcomingChallengeCard />
-                        <UpcomingChallengeCard />
-                        <UpcomingChallengeCard />
-                    </div>
+                    <UpcomingChallenges />
                 </div>
                 <div className="md:w-[25%] w-full mt-10" >
                     <CoachCard />
-                    <div className="bg-white border mt-10 border-blue-400 h-[300px] rounded-md p-4"></div>
-                    <div className="bg-white border mt-10 border-blue-400 h-[300px] rounded-md p-4"></div>
+                    <FitnessClubCard />
+                    {/* <div className="bg-white border mt-10 border-blue-400 h-[300px] rounded-md p-4"></div> */}
+                    {/* <div className="bg-white border mt-10 border-blue-400 h-[300px] rounded-md p-4"></div> */}
                 </div>
             </div>
         </div>

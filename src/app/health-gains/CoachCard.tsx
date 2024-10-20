@@ -22,18 +22,30 @@ function CoachEntry({ name, title, avatarUrl }: Coach) {
 }
 
 export default function CoachCard() {
-    const coach: Coach = {
-        name: "Gunnar Peterson",
-        title: "Fitness and health coach",
-        avatarUrl: "/images/avatar.png"
-    };
+    const coaches: Coach[] = [
+        {
+            name: "Gunnar Peterson",
+            title: "Fitness and Health Coach",
+            avatarUrl: "/images/gunnar-peterson.png"
+        },
+        {
+            name: "Sarah Johnson",
+            title: "Nutrition Specialist",
+            avatarUrl: "/images/sarah-johnson.png"
+        },
+        {
+            name: "Michael Chen",
+            title: "Strength Training Expert",
+            avatarUrl: "/images/michael-chen.png"
+        }
+    ];
 
     return (
         <div className="bg-white border border-blue-400 h-[300px] rounded-md p-4">
             <h2 className="text-2xl font-semibold text-gray-700 mb-6">Coaches</h2>
-            <CoachEntry {...coach} />
-            <CoachEntry {...coach} />
-            <CoachEntry {...coach} />
+            {coaches.map((coach, index) => (
+                <CoachEntry key={index} {...coach} />
+            ))}
         </div>
     )
 }

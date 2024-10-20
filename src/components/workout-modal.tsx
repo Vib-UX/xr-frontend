@@ -1,20 +1,25 @@
-"use client"
+'use client';
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-    Dialog,
-    DialogContent,
-    DialogTrigger
-} from "@/components/ui/dialog";
-import { fetchStats } from "@/hooks/useFitbitAuth";
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { fetchStats } from '@/hooks/useFitbitAuth';
 import { useQuery } from '@tanstack/react-query';
-import Image from "next/image";
-import { useRef, useState } from "react";
-import StartWorkoutButton from "./health/StartWorkout";
-import RecordDailyWorkout from "./RecordDailyWorkout";
+import Image from 'next/image';
+import { useRef, useState } from 'react';
+import StartWorkoutButton from './health/StartWorkout';
+import RecordDailyWorkout from './RecordDailyWorkout';
 
-export default function WorkoutoutModal({ children }: {
-    children: React.ReactNode
+export default function WorkoutoutModal({
+    children,
+}: {
+    children: React.ReactNode;
 }) {
     const [showVrVideo, setShowVrVideo] = useState(true);
     const [isWorkoutStarted, setIsWorkoutStarted] = useState(false);
@@ -29,9 +34,8 @@ export default function WorkoutoutModal({ children }: {
     const handleStartWorkout = async () => {
         //TODO contract call of staking
         await refetch();
-        debugger
+
         if (videoRef.current) {
-            debugger
             videoRef.current.play();
             setIsWorkoutStarted(true);
         }
@@ -56,25 +60,40 @@ export default function WorkoutoutModal({ children }: {
 
     return (
         <Dialog>
-            <DialogTrigger asChild>
-                {children}
-            </DialogTrigger>
+            <DialogTrigger asChild>{children}</DialogTrigger>
             <DialogContent className="sm:max-w-[425px] md:max-w-[700px]">
                 <Card className="w-full mt-3">
                     <CardHeader>
-                        <CardTitle>Get Started with your fitness journey</CardTitle>
-                        <CardDescription>Cut fat and build power at home and get your desired physique.</CardDescription>
+                        <CardTitle>
+                            Get Started with your fitness journey
+                        </CardTitle>
+                        <CardDescription>
+                            Cut fat and build power at home and get your desired
+                            physique.
+                        </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        {
-                            !showVrVideo ? <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        {!showVrVideo ? (
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                                 {[
-                                    { name: "Chest", image: "/images/bodybuilder.png" },
-                                    { name: "Legs", image: "/images/dumbell.png" },
-                                    { name: "Back", image: "/images/luke.png" },
-                                    { name: "Shoulders", image: "/images/ini.png" }
+                                    {
+                                        name: 'Chest',
+                                        image: '/images/bodybuilder.png',
+                                    },
+                                    {
+                                        name: 'Legs',
+                                        image: '/images/dumbell.png',
+                                    },
+                                    { name: 'Back', image: '/images/luke.png' },
+                                    {
+                                        name: 'Shoulders',
+                                        image: '/images/ini.png',
+                                    },
                                 ].map((part) => (
-                                    <div key={part.name} className="relative aspect-video">
+                                    <div
+                                        key={part.name}
+                                        className="relative aspect-video"
+                                    >
                                         <Image
                                             src={part.image}
                                             alt={part.name}
@@ -87,7 +106,9 @@ export default function WorkoutoutModal({ children }: {
                                         </span>
                                     </div>
                                 ))}
-                            </div> : <div>
+                            </div>
+                        ) : (
+                            <div>
                                 <video
                                     className="rounded-lg"
                                     ref={videoRef}
@@ -99,14 +120,16 @@ export default function WorkoutoutModal({ children }: {
                                     />
                                 </video>
                             </div>
-                        }
+                        )}
                         <div>
                             <h3 className="text-lg font-semibold mb-2 mt-3">
                                 Workout Details
                             </h3>
                             <ul className="space-y-2">
                                 <li className="flex items-center justify-between">
-                                    <span className="font-medium">Duration</span>
+                                    <span className="font-medium">
+                                        Duration
+                                    </span>
                                     <div className="font-bold text-blue-600">
                                         5 Days
                                     </div>
@@ -118,7 +141,9 @@ export default function WorkoutoutModal({ children }: {
                                     </div>
                                 </li>
                                 <li className="flex items-center justify-between">
-                                    <span className="font-medium">Calories burned</span>
+                                    <span className="font-medium">
+                                        Calories burned
+                                    </span>
                                     <div className="font-bold text-blue-600">
                                         60-100
                                     </div>
@@ -127,17 +152,21 @@ export default function WorkoutoutModal({ children }: {
                         </div>
                     </CardContent>
                     <CardFooter>
-                        {showVrVideo ? <StartWorkoutButton
-                            onSuccess={() => {
-                                setIsWorkoutStarted(true)
-                                if (videoRef.current) {
-                                    videoRef.current.play();
-                                }
-                            }} /> : <RecordDailyWorkout />
-                        }
+                        {showVrVideo ? (
+                            <StartWorkoutButton
+                                onSuccess={() => {
+                                    setIsWorkoutStarted(true);
+                                    if (videoRef.current) {
+                                        videoRef.current.play();
+                                    }
+                                }}
+                            />
+                        ) : (
+                            <RecordDailyWorkout />
+                        )}
                     </CardFooter>
                 </Card>
             </DialogContent>
         </Dialog>
-    )
+    );
 }

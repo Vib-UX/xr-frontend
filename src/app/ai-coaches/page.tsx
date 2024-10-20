@@ -103,7 +103,7 @@ const AICoaches: React.FC = () => {
             input.includes('workout plan') || input.includes('Workout Plan');
         const dietValidate =
             input.includes('diet plan') || input.includes('Diet Plan');
-        const stringInput = `having ${data?.age} years old, having a weight of ${data?.weight} metric, and a height of ${data?.height} cm.`;
+        const stringInput = `for ${data?.age} years old, having a weight of ${data?.weight} metric, and a height of ${data?.height} cm.`;
         const finalInput =
             validateWorkout || dietValidate ? `${input} ${stringInput}` : input;
         const name = data?.fullName;

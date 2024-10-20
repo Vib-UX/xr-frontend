@@ -1,17 +1,15 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { fetchUserData, useFitbitAuth } from '@/hooks/useFitbitAuth';
 import { generateCodeChallenge, generateCodeVerifier } from '@/lib/helper';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { LogIn } from 'lucide-react';
-import { signIn, useSession } from 'next-auth/react';
 import Image from 'next/image';
-
+import Avatar from '../../../public/images/avatar.png';
 import { StreakCounter } from '@/components/StreakCounter';
 import { PulsatingButton } from '@/components/buttons/PulsatingButton';
+import WaveLoader from '@/components/loader';
+import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import bp from '../../../public/images/bp.png';
 import Gunna from '../../../public/images/gunna.png';
 import hr from '../../../public/images/hr.png';
@@ -23,48 +21,45 @@ const WorkoutData = [
         item: 'Heart Rate',
         unit: 'bpm',
         img: hr,
+        value: '70',
     },
     {
         item: 'Blood Pressure',
         unit: 'mg/hg',
         img: bp,
+        value: '120/75',
     },
 
     {
         item: 'Calories',
         unit: 'kcal',
         img: sleep,
+        value: '200',
     },
     {
         item: 'Walking',
         unit: 'Steps',
         img: walking,
+        value: '5000',
     },
     {
         item: 'Sleep',
         unit: 'Hrs',
         img: sleep,
+        value: '8hrs',
     },
     {
         item: 'Distance',
         unit: 'km',
         img: hr,
+        value: '2',
     },
 ];
 
 export default function ProfilePage() {
-    const { data: session, status } = useSession();
     useFitbitAuth();
-    const { isPending, mutateAsync } = useMutation({
-        mutationFn: () => signIn('google'),
-    });
 
-    const isConnected = !!session;
-
-    const handleGoogleSignIn = () => {
-        // In a real application, this would trigger the Google Sign-In process
-        mutateAsync();
-    };
+    const { user } = useDynamicContext();
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -99,40 +94,6 @@ export default function ProfilePage() {
         sessionStorage.setItem('code_verifier', verifier);
         window.location.href = `https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23PVCB&scope=activity+cardio_fitness+electrocardiogram+heartrate+irregular_rhythm_notifications+location+nutrition+oxygen_saturation+profile+respiratory_rate+settings+sleep+social+temperature+weight&code_challenge=${challenge}&code_challenge_method=S256`;
     };
-
-    if (!isConnected) {
-        return (
-            <div className="container mx-auto p-6 flex flex-col items-center justify-center min-h-screen">
-                <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.5 }}
-                >
-                    <Card className="w-full max-w-md bg-white">
-                        <CardHeader>
-                            <CardTitle className="text-2xl text-center text-[#3B82F6]">
-                                Welcome to BASE FIT
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-center mb-6">
-                                Sign in to access your profile and training
-                                programs.
-                            </p>
-                            <Button
-                                disabled={isPending}
-                                onClick={handleGoogleSignIn}
-                                className="w-full bg-[#3B82F6] text-white disabled:cursor-not-allowed hover:bg-[#2563EB]"
-                            >
-                                <LogIn className="mr-2 h-4 w-4" />
-                                Sign in with Google
-                            </Button>
-                        </CardContent>
-                    </Card>
-                </motion.div>
-            </div>
-        );
-    }
     return (
         <motion.div
             initial="hidden"
@@ -143,44 +104,66 @@ export default function ProfilePage() {
                 className="text-2xl font-medium mb-6 text-[#0051FE]"
                 variants={itemVariants}
             >
-                Welcome, {fitbitData?.displayName}
+                Welcome,{' '}
+                {fitbitData?.displayName ||
+                    user?.verifiedCredentials[2]?.publicIdentifier}
             </motion.h1>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-0 md:gap-x-10">
                 <div className="flex flex-col md:flex-row  col-span-2 border gap-x-6 border-[#7FA8FF] rounded-lg bg-[#F5FAFE]">
                     <div className="bg-white p-6 rounded-xl">
                         <Image
-                            src={fitbitData?.avatar}
+                            src={fitbitData?.avatar || Avatar}
                             alt="avatar"
                             height={150}
                             width={150}
                             className="rounded-xl mx-auto md:mx-0"
                         />
                         <div className="text-center pt-2">
-                            @{fitbitData?.displayName}
+                            @
+                            {fitbitData?.displayName ||
+                                user?.verifiedCredentials[2]?.publicIdentifier}
                         </div>
                     </div>
-                    <div className="w-full grid grid-cols-3 p-6 gap-5 md:gap-0 text-[#313131B2]">
-                        <div>Age : {fitbitData?.age} yrs</div>
-                        <div>Weight : {fitbitData?.weight}</div>
-                        <div>Height : {fitbitData?.height}</div>
-                        <div>Steps : {fitbitData?.averageDailySteps}</div>
-                        <div className="col-span-2">
-                            Steps : {fitbitData?.averageDailySteps}
-                        </div>
-
-                        <div className="col-span-3 md:col-span-2 flex items-start gap-x-2">
-                            Active Streaks : <StreakCounter />
-                        </div>
-                        <div className="md:col-span-1 col-span-3">
-                            {!fitbitData && (
-                                <div onClick={handleGetFitRedirection}>
-                                    <PulsatingButton className="h-fit w-full md:w-fit">
-                                        Connect Gear
-                                    </PulsatingButton>
+                    {fitbitData ? (
+                        <div className="w-full grid grid-cols-3 p-6 gap-5 md:gap-0 text-[#313131B2]">
+                            <div>Age : {fitbitData?.age} yrs</div>
+                            <div>Weight : {fitbitData?.weight} met</div>
+                            <div>Height : {fitbitData?.height} cm</div>
+                            <div>Steps : {fitbitData?.averageDailySteps}</div>
+                            {fitbitData?.topBadges[0]?.image300px && (
+                                <div className="col-span-2 flex items-start gap-x-2">
+                                    Badges :{' '}
+                                    <Image
+                                        src={fitbitData.topBadges[0].image300px}
+                                        alt="avatar"
+                                        height={25}
+                                        width={25}
+                                    />
                                 </div>
                             )}
+
+                            <div className="col-span-3 md:col-span-2 flex items-start gap-x-2">
+                                Active Streaks : <StreakCounter />
+                            </div>
+                            <div className="md:col-span-1 col-span-3">
+                                <PulsatingButton className="h-fit w-full md:w-fit">
+                                    Gear Connected
+                                </PulsatingButton>
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="py-4 flex items-center justify-center w-full flex-col">
+                            Connect your Fitbit to see your stats
+                            <div
+                                onClick={handleGetFitRedirection}
+                                className="w-full px-8 md:px-0"
+                            >
+                                <PulsatingButton className="h-fit w-full md:w-fit mx-auto mt-3">
+                                    Connect Gear
+                                </PulsatingButton>
+                            </div>
+                        </div>
+                    )}
                 </div>
                 <div className="p-4 rounded-lg bg-[#F5FAFE] text-[#313131B2] mt-6 md:mt-0 border border-[#7FA8FF]">
                     Coaches
@@ -211,8 +194,12 @@ export default function ProfilePage() {
                             {elem.item}
                             <div className="flex items-center justify-between mt-5">
                                 <div>
-                                    <div className="font-semibold text-lg md:text-2xl">
-                                        120
+                                    <div className="font-semibold text-lg">
+                                        {!fitbitData ? (
+                                            <WaveLoader />
+                                        ) : (
+                                            elem.value
+                                        )}
                                     </div>
                                     <div className="bg-[#7FA8FF33] px-2 text-xs md:text-sm text-[#588DFD] rounded-lg border boreder-[#DDE9FE]">
                                         {elem.unit}

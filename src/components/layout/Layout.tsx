@@ -4,9 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
-import {
-    DynamicWidget
-} from '@dynamic-labs/sdk-react-core';
+import { DynamicWidget } from '@dynamic-labs/sdk-react-core';
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -16,7 +14,6 @@ import { useMediaQuery } from 'react-responsive';
 export default function Layout({ children }: { children?: React.ReactNode }) {
     const [isOpen, setIsOpen] = useState(false);
     const isDesktop = useMediaQuery({ query: '(min-width: 768px)' });
-
     const SidebarContent = () => (
         <ScrollArea className="h-full  rounded-md">
             <div className="flex items-start  h-full  justify-between">
