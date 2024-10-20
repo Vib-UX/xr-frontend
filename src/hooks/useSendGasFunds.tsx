@@ -134,6 +134,7 @@ function useSendGasFunds() {
         };
       } catch (error) {
         console.error(error);
+        toast.dismiss()
         toast.error("Failed to send funds");
         throw new Error("Failed to send funds");
       }
