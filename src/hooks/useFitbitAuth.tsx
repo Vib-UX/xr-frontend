@@ -69,7 +69,7 @@ export function useFitbitAuth() {
         },
 
         body: new URLSearchParams({
-          client_id: "23PVCB",
+          client_id: "23PVRC",
           grant_type: "authorization_code",
           code: code,
           code_verifier: codeVerifier || "",

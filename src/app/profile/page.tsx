@@ -1,19 +1,19 @@
 'use client';
 
+import { StreakCounter } from '@/components/StreakCounter';
+import { PulsatingButton } from '@/components/buttons/PulsatingButton';
+import WaveLoader from '@/components/loader';
 import {
     fetchStats,
     fetchUserData,
     useFitbitAuth,
 } from '@/hooks/useFitbitAuth';
 import { generateCodeChallenge, generateCodeVerifier } from '@/lib/helper';
+import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Avatar from '../../../public/images/avatar.png';
-import { StreakCounter } from '@/components/StreakCounter';
-import { PulsatingButton } from '@/components/buttons/PulsatingButton';
-import WaveLoader from '@/components/loader';
-import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import bp from '../../../public/images/bp.png';
 import Gunna from '../../../public/images/gunna.png';
 import hr from '../../../public/images/hr.png';
@@ -101,7 +101,7 @@ export default function ProfilePage() {
         const verifier = generateCodeVerifier();
         const challenge = await generateCodeChallenge(verifier);
         sessionStorage.setItem('code_verifier', verifier);
-        window.location.href = `https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23PVCB&scope=activity+cardio_fitness+electrocardiogram+heartrate+irregular_rhythm_notifications+location+nutrition+oxygen_saturation+profile+respiratory_rate+settings+sleep+social+temperature+weight&code_challenge=${challenge}&code_challenge_method=S256`;
+        window.location.href = `https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=23PVRC&scope=activity+cardio_fitness+electrocardiogram+heartrate+irregular_rhythm_notifications+location+nutrition+oxygen_saturation+profile+respiratory_rate+settings+sleep+social+temperature+weight&code_challenge=${challenge}&code_challenge_method=S256`;
     };
     return (
         <motion.div
