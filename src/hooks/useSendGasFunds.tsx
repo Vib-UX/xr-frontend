@@ -88,6 +88,8 @@ function useSendGasFunds() {
             args: [walletAddress as `0x${string}`, BigInt(usdcAmount)],
           });
           await publicClient.waitForTransactionReceipt({ hash: sendUsdcTx });
+          toast.dismiss()
+          toast.success("Funds sent successfully");
           return {
             nativeAmount: Big(nativeAmount)
               .div(10 ** 18)
@@ -104,6 +106,8 @@ function useSendGasFunds() {
             gasPrice: BigInt(200000000),
           });
           await publicClient.waitForTransactionReceipt({ hash: tx });
+          toast.dismiss()
+          toast.success("Funds sent successfully");
           return {
             nativeAmount: Big(nativeAmount)
               .div(10 ** 18)
