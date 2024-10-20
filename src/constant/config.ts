@@ -1,5 +1,5 @@
 export const siteConfig = {
-  title: "Base fit",
-  description: "Base fit",
-  url: "https:basefit.com",
+  title: "Progression fit",
+  description: "Progression fit",
+  url: "https:progressionfit.com",
 };

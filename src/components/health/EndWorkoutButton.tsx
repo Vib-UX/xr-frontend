@@ -7,9 +7,12 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { useAccount, usePublicClient, useWriteContract } from 'wagmi'
 import Button from '../buttons/Button'
+import useMorphBiconomyAccount from '@/hooks/useMorphBiconomyAcc'
+import useGlobalStore from '@/store'
 
 const EndWorkoutButton = ({ disabled }: { disabled: boolean }) => {
   const { chain } = useAccount()
+  const { morphBiconomyAccount } = useGlobalStore()
   const [txHash, setTxHash] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const { toggleStreak } = useStreak()

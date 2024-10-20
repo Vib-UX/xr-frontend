@@ -33,7 +33,7 @@ export function NavbarComponent() {
               fill="white"
             />
           </svg>
-          <span className="text-xl font-bold">BASE FIT</span>
+          <span className="text-xl font-bold">Progression FIT</span>
         </div>
         <div className="hidden md:flex space-x-6">
           {[

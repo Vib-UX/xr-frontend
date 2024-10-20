@@ -1,6 +1,8 @@
 import { FITNESS_ADDRESS_MAPPING, MUSD_ADDRESS_MAPPING } from '@/constants'
 
 import { FITNESS_ABI } from '@/abi/FITNESS_ABI'
+import useGlobalStore from '@/store'
+import { MORPH_HOLESKY } from '@/utils/chains'
 import Big from 'big.js'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
@@ -11,6 +13,7 @@ import Button from '../buttons/Button'
 const StakeButtonWorkout = ({ onSuccess }: { onSuccess: () => void }) => {
   const { chain } = useAccount()
   const [txHash, setTxHash] = useState('')
+  const { morphBiconomyAccount } = useGlobalStore()
   const publicClient = usePublicClient()
   const [isLoading, setIsLoading] = useState(false)
   const amount = Big(1).toString();
@@ -39,6 +42,13 @@ const StakeButtonWorkout = ({ onSuccess }: { onSuccess: () => void }) => {
       toast.loading('Transaction awaiting confirmation...')
       if (!publicClient) {
         throw new Error('Public client not found')
+      }
+      if (chain?.id === MORPH_HOLESKY.id && !morphBiconomyAccount) {
+        throw new Error('Morph Holesky account not found')
+      }
+      if (chain?.id === MORPH_HOLESKY.id && morphBiconomyAccount) {
+
+        return
       }
       if (allowance !== undefined && Big(allowance.toString()).lt(amount)) {
         const approvalTxHash = await writeContractAsync({

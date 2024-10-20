@@ -74,7 +74,7 @@ export default function UserProfile() {
                 >
                     <Card className="w-full max-w-md bg-white">
                         <CardHeader>
-                            <CardTitle className="text-2xl text-center text-[#3B82F6]">Welcome to BASE FIT</CardTitle>
+                            <CardTitle className="text-2xl text-center text-[#3B82F6]">Welcome to Progression FIT</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <p className="text-center mb-6">Sign in to access your profile and training programs.</p>

@@ -22,6 +22,7 @@ function useSendGasFunds() {
     queryFn: async () => {
       try {
         if (!publicClient || !address || !chain) throw new Error("Missing required data");
+        debugger
         if (chain.id === MORPH_HOLESKY.id && !morphBiconomyAccountAddress) {
           return {
             nativeAmount: "0",
