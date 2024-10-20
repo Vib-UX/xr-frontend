@@ -7,6 +7,7 @@ import useGlobalStore from '@/store';
 import { MORPH_HOLESKY } from '@/utils/chains';
 import Image from 'next/image';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { Address, erc20Abi, formatUnits, getAddress } from 'viem';
 import { useAccount, useReadContract } from 'wagmi';
 import { StreakDisplay } from './StreakContext';
@@ -184,7 +185,10 @@ export function OngoingChallengeCard() {
                         </p>
                         <div className="flex flex-col md:flex-row justify-between items-center gap-y-4 md:gap-y-0">
                             <StreakDisplay />
-                            <WorkoutoutModal open={open} onClose={() => setOpen(false)}>
+                            <WorkoutoutModal open={open} onClose={() => {
+                                toast.dismiss()
+                                setOpen(false)
+                            }}>
                                 <div
                                     onClick={() => setOpen(true)}
                                     className="bg-blue-100 p-2 rounded-lg cursor-pointer w-full md:w-fit text-center"
