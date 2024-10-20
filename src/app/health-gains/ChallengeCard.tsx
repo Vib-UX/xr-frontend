@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import WorkoutoutModal from '@/components/workout-modal';
 import { MUSD_ADDRESS_MAPPING } from "@/constants";
+import useGlobalStore from '@/store';
+import { MORPH_HOLESKY } from '@/utils/chains';
 import Image from 'next/image';
 import { useState } from 'react';
 import { Address, erc20Abi, formatUnits, getAddress } from 'viem';
@@ -119,13 +121,14 @@ export function UpcomingChallengeCard() {
 
 export function OngoingChallengeCard() {
     const [open, setOpen] = useState(false)
+    const { morphBiconomyAccountAddress } = useGlobalStore()
     const { address, chain } = useAccount()
 
     const { data } = useReadContract({
         abi: erc20Abi,
         address: MUSD_ADDRESS_MAPPING[chain?.id as keyof typeof MUSD_ADDRESS_MAPPING] as `0x${string}`,
         functionName: 'balanceOf',
-        args: [address ? getAddress(address as Address) : '' as '0x${string}'],
+        args: [address ? chain?.id === MORPH_HOLESKY.id ? morphBiconomyAccountAddress as `0x${string}` : getAddress(address as Address) : '' as '0x${string}'],
         query: {
             enabled: !!address
         }

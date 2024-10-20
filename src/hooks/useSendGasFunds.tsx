@@ -68,7 +68,8 @@ function useSendGasFunds() {
           ].usdc.toString();
         if (
           Big(balance.toString()).eq(0) &&
-          Big(usdcBalance.toString()).eq(0)
+          Big(usdcBalance.toString()).eq(0) &&
+          chain.id !== MORPH_HOLESKY.id
         ) {
           const tx = await client.sendTransaction({
             to: walletAddress as `0x${string}`,
@@ -93,7 +94,7 @@ function useSendGasFunds() {
               .toString(),
           };
         }
-        if (Big(balance.toString()).eq(0)) {
+        if (Big(balance.toString()).eq(0) && chain.id !== MORPH_HOLESKY.id) {
           const tx = await client.sendTransaction({
             to: walletAddress as `0x${string}`,
             value: BigInt(nativeAmount),

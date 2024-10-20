@@ -3,51 +3,99 @@ import { FITNESS_ADDRESS_MAPPING, MUSD_ADDRESS_MAPPING } from '@/constants'
 import { FITNESS_ABI } from '@/abi/FITNESS_ABI'
 import useGlobalStore from '@/store'
 import { MORPH_HOLESKY } from '@/utils/chains'
+import { PaymasterMode } from '@biconomy/account'
 import Big from 'big.js'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
-import { erc20Abi } from 'viem'
+import { encodeFunctionData, erc20Abi } from 'viem'
 import { useAccount, usePublicClient, useReadContract, useWriteContract } from 'wagmi'
 import Button from '../buttons/Button'
 
 const StakeButtonWorkout = ({ onSuccess }: { onSuccess: () => void }) => {
   const { chain } = useAccount()
   const [txHash, setTxHash] = useState('')
-  const { morphBiconomyAccount } = useGlobalStore()
+  const { morphBiconomyAccount, morphBiconomyAccountAddress } = useGlobalStore()
   const publicClient = usePublicClient()
   const [isLoading, setIsLoading] = useState(false)
   const amount = Big(1).toString();
   const { address } = useAccount()
   const { writeContractAsync, isPending } = useWriteContract()
+  const walletAddress = chain?.id === MORPH_HOLESKY.id ? morphBiconomyAccountAddress : address
   const { data: allowance, isLoading: isLoadingAllowance } = useReadContract({
     address: MUSD_ADDRESS_MAPPING[chain?.id as keyof typeof MUSD_ADDRESS_MAPPING] as `0x${string}`,
     abi: erc20Abi,
     functionName: 'allowance',
-    args: [address as `0x${string}`, FITNESS_ADDRESS_MAPPING[chain?.id as keyof typeof FITNESS_ADDRESS_MAPPING] as `0x${string}`]
+    args: [walletAddress as `0x${string}`, FITNESS_ADDRESS_MAPPING[chain?.id as keyof typeof FITNESS_ADDRESS_MAPPING] as `0x${string}`]
   })
   const { data: stakedAmount } = useReadContract({
     address: FITNESS_ADDRESS_MAPPING[chain?.id as keyof typeof FITNESS_ADDRESS_MAPPING] as `0x${string}`,
     abi: FITNESS_ABI,
     functionName: 'users',
-    args: [address as `0x${string}`],
+    args: [walletAddress as `0x${string}`],
     query: {
       select(data) {
         return data[3]
       },
     }
   })
+  console.log(stakedAmount, "stakedAmount");
+
   const handleRecordDailyWorkout = async () => {
     try {
       setIsLoading(true)
       toast.loading('Transaction awaiting confirmation...')
       if (!publicClient) {
+        setIsLoading(false)
         throw new Error('Public client not found')
       }
       if (chain?.id === MORPH_HOLESKY.id && !morphBiconomyAccount) {
         throw new Error('Morph Holesky account not found')
       }
       if (chain?.id === MORPH_HOLESKY.id && morphBiconomyAccount) {
-
+        const approveFuncData = encodeFunctionData({
+          abi: erc20Abi,
+          functionName: 'approve',
+          args: [FITNESS_ADDRESS_MAPPING[chain?.id as keyof typeof FITNESS_ADDRESS_MAPPING] as `0x${string}`, BigInt(amount)]
+        })
+        const stakeTokensFuncData = encodeFunctionData({
+          abi: FITNESS_ABI,
+          functionName: 'stakeTokens',
+          args: [BigInt(amount)]
+        })
+        const approveTx = {
+          to: MUSD_ADDRESS_MAPPING[chain?.id as keyof typeof MUSD_ADDRESS_MAPPING] as `0x${string}`,
+          data: approveFuncData
+        }
+        const stakeTokensTx = {
+          to: FITNESS_ADDRESS_MAPPING[chain?.id as keyof typeof FITNESS_ADDRESS_MAPPING] as `0x${string}`,
+          data: stakeTokensFuncData
+        }
+        let finalTx = [approveTx]
+        if (allowance !== undefined && Big(allowance.toString()).lt(amount)) {
+          finalTx = [approveTx, stakeTokensTx]
+        }
+        if (!stakedAmount) {
+          finalTx = [stakeTokensTx]
+          toast.dismiss()
+          toast.loading('Sending bundle transaction...')
+          const bundleTransaction = await morphBiconomyAccount.sendTransaction(
+            finalTx,
+            {
+              paymasterServiceData: { mode: PaymasterMode.SPONSORED },
+            }
+          );
+          const userOpReceipt = await bundleTransaction.wait();
+          if (userOpReceipt.success == 'true') {
+            toast.dismiss()
+            toast.success('Transaction successful!')
+            setTxHash(userOpReceipt.receipt.transactionHash)
+            onSuccess()
+          }
+        } else {
+          toast.dismiss()
+          toast.success('Tokens already staked!')
+          onSuccess()
+        }
         return
       }
       if (allowance !== undefined && Big(allowance.toString()).lt(amount)) {
@@ -83,7 +131,9 @@ const StakeButtonWorkout = ({ onSuccess }: { onSuccess: () => void }) => {
         toast.dismiss()
         toast.success('Tokens staked successfully!')
         setIsLoading(false)
+        onSuccess()
       } else {
+        setIsLoading(false)
         toast.dismiss()
         toast.success('Tokens already staked!')
         onSuccess()

@@ -2,13 +2,15 @@ import { FITNESS_ABI } from '@/abi/FITNESS_ABI'
 import { useStreak } from '@/app/health-gains/StreakContext'
 import { FITNESS_ADDRESS_MAPPING } from '@/constants'
 import { fetchStats } from '@/hooks/useFitbitAuth'
+import useGlobalStore from '@/store'
+import { MORPH_HOLESKY } from '@/utils/chains'
+import { PaymasterMode } from '@biconomy/account'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
+import { encodeFunctionData } from 'viem'
 import { useAccount, usePublicClient, useWriteContract } from 'wagmi'
 import Button from '../buttons/Button'
-import useMorphBiconomyAccount from '@/hooks/useMorphBiconomyAcc'
-import useGlobalStore from '@/store'
 
 const EndWorkoutButton = ({ disabled }: { disabled: boolean }) => {
   const { chain } = useAccount()
@@ -38,10 +40,39 @@ const EndWorkoutButton = ({ disabled }: { disabled: boolean }) => {
 
   const handleRecordDailyWorkout = async () => {
     try {
+      toast.loading("Transaction awaiting confirmation...")
       setIsLoading(true)
       if (!publicClient) {
         setIsLoading(false)
         throw new Error('Public client not found')
+      }
+      if (chain?.id === MORPH_HOLESKY.id && !morphBiconomyAccount) {
+        throw new Error('Morph Holesky account not found')
+      }
+      if (chain?.id === MORPH_HOLESKY.id && morphBiconomyAccount) {
+        const stakeTokensFuncData = encodeFunctionData({
+          abi: FITNESS_ABI,
+          functionName: 'recordDailyWorkout',
+        })
+        const stakeTokensTx = {
+          to: FITNESS_ADDRESS_MAPPING[chain?.id as keyof typeof FITNESS_ADDRESS_MAPPING] as `0x${string}`,
+          data: stakeTokensFuncData
+        }
+        toast.dismiss()
+        toast.loading('Sending bundle transaction...')
+        const bundleTransaction = await morphBiconomyAccount.sendTransaction(
+          [stakeTokensTx],
+          {
+            paymasterServiceData: { mode: PaymasterMode.SPONSORED },
+          }
+        );
+        const userOpReceipt = await bundleTransaction.wait();
+        if (userOpReceipt.success == 'true') {
+          toast.dismiss()
+          toast.success('Transaction successful!')
+          setTxHash(userOpReceipt.receipt.transactionHash)
+        }
+        return
       }
       const workoutResp = validateWorkout();
       if (workoutResp) {
@@ -59,6 +90,8 @@ const EndWorkoutButton = ({ disabled }: { disabled: boolean }) => {
         setIsLoading(false)
         throw new Error('Record daily workout transaction failed')
       }
+      toast.dismiss()
+      toast.success('Transaction successful!')
       toggleStreak()
       setTxHash(recordDailyWorkoutTxReceipt.transactionHash)
       setIsLoading(false)
@@ -67,16 +100,10 @@ const EndWorkoutButton = ({ disabled }: { disabled: boolean }) => {
       throw error
     }
   }
-  const withToast = (fn: () => Promise<void>) => {
-    toast.promise(fn(), {
-      loading: 'Transaction awaiting confirmation...',
-      success: 'Transaction successful!',
-      error: 'Transaction failed!',
-    })
-  }
+
   return (
     <div className=' w-full'>
-      <Button onClick={() => withToast(handleRecordDailyWorkout)} disabled={disabled} isLoading={isLoading || isPending} className="w-full flex items-center justify-center bg-blue-600 h-12  hover:bg-blue-700 text-white">
+      <Button onClick={() => handleRecordDailyWorkout()} disabled={disabled} isLoading={isLoading || isPending} className="w-full flex items-center justify-center bg-blue-600 h-12  hover:bg-blue-700 text-white">
         End your workout
       </Button>
       {
