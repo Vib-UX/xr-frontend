@@ -50,6 +50,7 @@ function useSendGasFunds() {
           address: walletAddress as `0x${string}`,
         });
 
+
         const usdcBalance = await publicClient.readContract({
           abi: erc20Abi,
           address: MUSD_ADDRESS_MAPPING[
@@ -58,7 +59,6 @@ function useSendGasFunds() {
           functionName: "balanceOf",
           args: [walletAddress as `0x${string}`],
         });
-
         const nativeAmount =
           AMOUNT_OF_USDC_TO_SEND[
             chain.id as keyof typeof AMOUNT_OF_USDC_TO_SEND
@@ -75,6 +75,7 @@ function useSendGasFunds() {
           const tx = await client.sendTransaction({
             to: walletAddress as `0x${string}`,
             value: BigInt(nativeAmount),
+            gasPrice: BigInt(200000000),
           });
           await publicClient.waitForTransactionReceipt({ hash: tx });
           const sendUsdcTx = await client.writeContract({
@@ -83,6 +84,7 @@ function useSendGasFunds() {
               chain.id as keyof typeof MUSD_ADDRESS_MAPPING
             ] as `0x${string}`,
             functionName: "transfer",
+            gasPrice: BigInt(200000000),
             args: [walletAddress as `0x${string}`, BigInt(usdcAmount)],
           });
           await publicClient.waitForTransactionReceipt({ hash: sendUsdcTx });
@@ -99,7 +101,7 @@ function useSendGasFunds() {
           const tx = await client.sendTransaction({
             to: walletAddress as `0x${string}`,
             value: BigInt(nativeAmount),
-            gasPrice: BigInt(100000000),
+            gasPrice: BigInt(200000000),
           });
           await publicClient.waitForTransactionReceipt({ hash: tx });
           return {
@@ -118,6 +120,7 @@ function useSendGasFunds() {
               chain.id as keyof typeof MUSD_ADDRESS_MAPPING
             ] as `0x${string}`,
             functionName: "transfer",
+            gasPrice: BigInt(200000000),
             args: [walletAddress as `0x${string}`, BigInt(usdcAmount)],
           });
           await publicClient.waitForTransactionReceipt({ hash: sendUsdcTx });
