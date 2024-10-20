@@ -67,26 +67,30 @@ export default function WorkoutoutModal({
     const { handleEncryptions } = useHandleEncryption();
     const onSubmitHandler = async () => {
         const { ciphertext, dataToEncryptHash } = await handleEncryptions({
-            data: fitbitData?.age,
+            data: fitbitData?.gender,
         });
         const createSchemaRes = await client.createSchema({
             name: 'fitness',
             data: [
                 { name: 'age', type: 'string' },
-                { name: 'dob', type: 'string' },
+                { name: 'name', type: 'string' },
                 { name: 'gender', type: 'string' },
+                { name: 'walking', type: 'string' },
+                { name: 'running', type: 'string' },
             ],
         });
         console.log(createSchemaRes);
         const createAttestationRes = await client.createAttestation({
             schemaId: createSchemaRes.schemaId,
             data: {
-                age: JSON.stringify({
+                age: fitbitData?.age,
+                name: fitbitData?.displayName,
+                gender: JSON.stringify({
                     ciphertext,
                     dataToEncryptHash,
                 }),
-                dob: fitbitData?.dateOfBirth,
-                gender: fitbitData?.gender,
+                walking: fitbitData?.strideLengthWalking,
+                running: fitbitData?.strideLengthRunning,
             },
             indexingValue: 'fitness',
         });
