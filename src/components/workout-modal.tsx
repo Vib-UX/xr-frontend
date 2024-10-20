@@ -34,6 +34,7 @@ export default function WorkoutoutModal({
 }) {
     const [showVrVideo, setShowVrVideo] = useState(false);
     const [isWorkoutStarted, setIsWorkoutStarted] = useState(false);
+    const [attestaionId, setAttestaionId] = useState('');
     const [isVideoPlaying, setIsVideoPlaying] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -89,6 +90,7 @@ export default function WorkoutoutModal({
             },
             indexingValue: 'fitness',
         });
+        setAttestaionId(createAttestationRes.attestationId);
         console.log(createAttestationRes);
     };
     return (
@@ -198,7 +200,10 @@ export default function WorkoutoutModal({
                     <CardFooter>
                         {showVrVideo ? (
                             isWorkoutStarted ? (
-                                <StartWorkoutButton disabled={false} />
+                                <StartWorkoutButton
+                                    disabled={false}
+                                    attestaionId={attestaionId}
+                                />
                             ) : (
                                 <Button
                                     onClick={async () => {
