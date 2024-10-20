@@ -36,6 +36,7 @@ function useSendGasFunds() {
             usdcAmount: "0",
           };
         }
+        toast.loading("Loading funds...")
         const walletAddress =
           chain.id === MORPH_HOLESKY.id ? morphBiconomyAccountAddress : address;
 
@@ -121,6 +122,7 @@ function useSendGasFunds() {
           });
           await publicClient.waitForTransactionReceipt({ hash: sendUsdcTx });
         }
+        toast.dismiss()
         toast.success("Funds sent successfully");
         return {
           nativeAmount: Big(nativeAmount)
@@ -138,6 +140,7 @@ function useSendGasFunds() {
     },
     retry: false,
     refetchOnWindowFocus: false,
+    refetchOnMount: false
   });
 }
 
