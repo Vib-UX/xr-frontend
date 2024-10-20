@@ -1,6 +1,10 @@
 "use client";
 
-import { fetchUserData, useFitbitAuth } from "@/hooks/useFitbitAuth";
+import {
+  fetchUserData,
+  fetchStats,
+  useFitbitAuth,
+} from "@/hooks/useFitbitAuth";
 import { generateCodeChallenge, generateCodeVerifier } from "@/lib/helper";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -87,6 +91,11 @@ export default function ProfilePage() {
     queryKey: ["user-data"],
     queryFn: () => fetchUserData(sessionCode!),
     enabled: !!sessionCode,
+  });
+  const { data: stats, refetch } = useQuery({
+    queryKey: [`user-stats`],
+    queryFn: () => fetchStats(sessionCode!),
+    enabled: true,
   });
   const handleGetFitRedirection = async () => {
     const verifier = generateCodeVerifier();
@@ -187,7 +196,15 @@ export default function ProfilePage() {
               <div className="flex items-center justify-between mt-5">
                 <div>
                   <div className="font-semibold text-lg">
-                    {!fitbitData ? <WaveLoader /> : elem.value}
+                    {!fitbitData ? (
+                      <WaveLoader />
+                    ) : elem.item === "Calories" ? (
+                      stats?.caloriesData[
+                        "activities-heart"
+                      ][0].value.heartRateZones[0].caloriesOut?.toFixed(2)
+                    ) : (
+                      elem.value
+                    )}
                   </div>
                   <div className="bg-[#7FA8FF33] px-2 text-xs md:text-sm text-[#588DFD] rounded-lg border boreder-[#DDE9FE]">
                     {elem.unit}
